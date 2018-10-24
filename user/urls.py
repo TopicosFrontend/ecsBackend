@@ -3,5 +3,10 @@ from django.urls import path
 from user import views
 
 urlpatterns = [
-    path('', views.index)
+    path('', views.index),
+    path('login/', views.login),
+    path('get_form/', views.get_form),
+    path('save_form/', views.save_form),
+    path('end_form/', views.end_form),
+    path('confirm_form/', views.confirm_form),
 ]
