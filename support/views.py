@@ -9,6 +9,7 @@ from django.contrib.auth import logout as auth_logout
 
 from django.contrib.auth.models import User
 from support.models import SupportInfo
+from collector.models import CollectorInfo
 
 # salgado
 def index(request): 
@@ -75,9 +76,24 @@ def census_status(request):
 def transfer_forms(request):
     return HttpResponse("support transfer_forms")
 
-# salgado
-def register_collectors(request):
-    return HttpResponse("support register_collectors")
+# salgado                                                                        
+@csrf_exempt                                                                     
+def register_collectors(request):                                                
+    try:
+        username = request.user.get_username()
+        user_support = SupportInfo.objects.get(username=username)
+    except SupportInfo.DoesNotExist:
+        return JsonResponse({"state": "false", "msg": "user is not a support member"})
+
+    raw_data = request.FILES["file"].read().decode("utf-8")                      
+                                                                                 
+    for line in raw_data.split():                                                
+        username, password = line.split(",")                                     
+        user = User.objects.create_user(username=username, password=password)    
+        user.save()                                                              
+        collector = CollectorInfo(username=user.get_username())                                     
+        collector.save()                                                         
+    return JsonResponse({"state": "true", "msg": "collectors created"})
 
 # silva
 def set_population(request):

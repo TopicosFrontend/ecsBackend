@@ -1,3 +1,4 @@
 from django.contrib import admin
+from collector.models import CollectorInfo
 
-# Register your models here.
+admin.site.register(CollectorInfo)
