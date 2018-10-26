@@ -1,3 +1,5 @@
 from django.contrib import admin
+from user.models import Code, Form
 
-# Register your models here.
+admin.site.register(Code)
+admin.site.register(Form)

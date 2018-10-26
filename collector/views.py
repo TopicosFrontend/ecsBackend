@@ -7,6 +7,9 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 
+from collector.models import CollectorInfo
+from user.models import Code, Form
+
 # salgado
 def index(request):
     return HttpResponse("Hello from collector backend")
@@ -33,7 +36,15 @@ def logout(request):
     return JsonResponse({"state": "true", "msg": "logout successful"})
 
 # silva
+@csrf_exempt
 def generate_codes(request):
+    collector = CollectorInfo.objects.get(username="jaimito")
+
+    code = Code(cfn="1234567890123", ecn="123456789012", collector=collector)
+    code.save()
+
+    form = Form(code=code)
+    form.save()
     return HttpResponse("collector generate_codes")
 
 # silva

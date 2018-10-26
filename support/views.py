@@ -57,8 +57,26 @@ def register(request):
     return JsonResponse({"state": "false", "msg": "user created"})
 
 # salgado
+@csrf_exempt
 def show_collector(request):
-    return HttpResponse("support show_collector")
+    try:
+        username = request.user.get_username()
+        user_support = SupportInfo.objects.get(username=username)
+    except SupportInfo.DoesNotExist:
+        return JsonResponse({"state": "false", "msg": "user is not a support member"})
+
+    try:
+        data = request.POST
+        collector = CollectorInfo.objects.get(username=data["user"])
+    except CollectorInfo.DoesNotExist:
+        return JsonResponse({"state": "false", "msg": "user is not a collector member"})
+
+    response = {"codes": []}
+
+    for code in collector.code_set.all():
+        response["codes"].append({"cfn": code.cfn, "ecn": code.ecn})
+
+    return JsonResponse(response)
 
 # salgado
 def show_collectors(request):
