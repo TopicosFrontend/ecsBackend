@@ -1,3 +1,4 @@
 from django.contrib import admin
+from support.models import SupportInfo
 
-# Register your models here.
+admin.site.register(SupportInfo)
