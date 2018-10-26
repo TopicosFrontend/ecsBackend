@@ -8,7 +8,7 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 
 from collector.models import CollectorInfo
-from user.models import Code, Form
+from user.models import Code, Form, Section, Item
 
 # salgado
 def index(request):
@@ -45,6 +45,13 @@ def generate_codes(request):
 
     form = Form(code=code)
     form.save()
+
+    section = Section(title="section1", form=form)
+    section.save()
+
+    item = Item(question="question1", section=section)
+    item.save()
+
     return HttpResponse("collector generate_codes")
 
 # silva
