@@ -7,6 +7,8 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 
+import json
+
 # salgado
 def index(request):
     return HttpResponse("Hello from user backend")
@@ -14,12 +16,12 @@ def index(request):
 # salgado
 @csrf_exempt
 def login(request):
+    print("Entro al login")
+    print(request.POST)
     data = request.POST
-    username = data["user"]
-    password = data["password"]
-
+    username = data.get("cfn")
+    password = data.get("ecn")
     user = authenticate(username=username, password=password)
-
     if user is None:
         return JsonResponse({"state": "false", "msg": "wrong user or password"})
     else:
