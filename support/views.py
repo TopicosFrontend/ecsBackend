@@ -67,7 +67,7 @@ def register(request):
 @ecs_login_required
 @ecs_support_only
 def show_collector(request):
-    data = request.POST
+    data = request.GET
     username = data["user"]
 
     try:
@@ -75,7 +75,7 @@ def show_collector(request):
     except CollectorInfo.DoesNotExist:
         return JsonResponse({"state": "false", "msg": "user is not a collector member"})
 
-    response = {"codes": []}
+    response = {"id": collector.id, "user": collector.username, "nombre": collector.name, "codes": []}
 
     for code in collector.code_set.all():
         response["codes"].append({"cfn": code.cfn, "ecn": code.ecn})
@@ -83,7 +83,14 @@ def show_collector(request):
     return JsonResponse(response)
 
 # salgado
+@csrf_exempt
+@ecs_login_required
+@ecs_support_only
 def show_collectors(request):
+
+    for collector in CollectorInfo.objects.all():
+        print(collector)
+
     return HttpResponse("support show_collectors")
 
 # salgado
