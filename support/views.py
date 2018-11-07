@@ -15,7 +15,7 @@ from django.db import IntegrityError
 from ecsBackend.ecs_decorators import ecs_login_required, ecs_support_only
 
 # salgado
-def index(request): 
+def index(request):
     return HttpResponse("Hello from support backend")
 
 # salgado
@@ -64,16 +64,14 @@ def register(request):
 
 # salgado
 @csrf_exempt
+@ecs_login_required
+@ecs_support_only
 def show_collector(request):
-    try:
-        username = request.user.get_username()
-        user_support = SupportInfo.objects.get(username=username)
-    except SupportInfo.DoesNotExist:
-        return JsonResponse({"state": "false", "msg": "user is not a support member"})
+    data = request.POST
+    username = data["user"]
 
     try:
-        data = request.POST
-        collector = CollectorInfo.objects.get(username=data["user"])
+        collector = CollectorInfo.objects.get(username=username)
     except CollectorInfo.DoesNotExist:
         return JsonResponse({"state": "false", "msg": "user is not a collector member"})
 
@@ -100,24 +98,30 @@ def census_status(request):
 def transfer_forms(request):
     return HttpResponse("support transfer_forms")
 
-# salgado                                                                        
-@csrf_exempt                                                                     
-def register_collectors(request):                                                
-    try:
-        username = request.user.get_username()
-        user_support = SupportInfo.objects.get(username=username)
-    except SupportInfo.DoesNotExist:
-        return JsonResponse({"state": "false", "msg": "user is not a support member"})
+import csv
 
-    raw_data = request.FILES["file"].read().decode("utf-8")                      
-                                                                                 
-    for line in raw_data.split():                                                
-        username, password = line.split(",")                                     
-        user = User.objects.create_user(username=username, password=password)    
-        user.save()                                                              
-        collector = CollectorInfo(username=user.get_username())                                     
-        collector.save()                                                         
-    return JsonResponse({"state": "true", "msg": "collectors created"})
+# salgado
+@csrf_exempt
+@ecs_login_required
+@ecs_support_only
+def register_collectors(request):
+    raw_data = request.FILES["file"].read().decode("utf-8")
+
+    error_users = []
+    for line in raw_data.splitlines():
+        username, password, name, cellphone = line.split(",")
+        try:
+            user = User.objects.create_user(username=username, password=password)
+            user.save()
+            collector = CollectorInfo(username=username, name=name, cellphone=cellphone)
+            collector.save()
+        except IntegrityError:
+            error_users.append(username)
+
+    if not error_users:
+        return JsonResponse({"state": "true", "msg": "collectors created"})
+    else:
+        return JsonResponse({"state": "false", "msg": "some users were not created: [%s]" % ", ".join(error_users)})
 
 # silva
 def set_population(request):
