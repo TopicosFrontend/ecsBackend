@@ -12,7 +12,7 @@ from support.models import SupportInfo
 from collector.models import CollectorInfo
 
 from django.db import IntegrityError
-from ecsBackend.ecs_decorators import ecs_login_required
+from ecsBackend.ecs_decorators import ecs_login_required, ecs_support_only
 
 # salgado
 def index(request): 
@@ -42,13 +42,8 @@ def logout(request):
 # salgado
 @csrf_exempt
 @ecs_login_required
+@ecs_support_only
 def register(request):
-    try:
-        username = request.user.get_username()
-        user_support = SupportInfo.objects.get(username=username)
-    except SupportInfo.DoesNotExist:
-        return JsonResponse({"state": "false", "msg": "user is not a support member"})
-
     data = request.POST
     username = data["user"]
     password = data["password"]
