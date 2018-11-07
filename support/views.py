@@ -35,8 +35,12 @@ def login(request):
 
 # salgado
 @csrf_exempt
+@ecs_support_only
+@ecs_login_required
 def logout(request):
     auth_logout(request)
+    if request.user.is_authenticated:
+        return JsonResponse({"state": "false", "msg": "error logout failed"})
     return JsonResponse({"state": "true", "msg": "logout successful"})
 
 # salgado

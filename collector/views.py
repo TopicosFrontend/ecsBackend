@@ -10,6 +10,8 @@ from django.contrib.auth import logout as auth_logout
 from collector.models import CollectorInfo
 from user.models import Code, Form, Section, Item
 
+from ecsBackend.ecs_decorators import ecs_login_required, ecs_collector_only
+
 # salgado
 def index(request):
     return HttpResponse("Hello from collector backend")
@@ -31,8 +33,12 @@ def login(request):
 
 # salgado
 @csrf_exempt
+@ecs_collector_only
+@ecs_login_required
 def logout(request):
     auth_logout(request)
+    if request.user.is_authenticated:
+        return JsonResponse({"state": "false", "msg": "error logout failed"})
     return JsonResponse({"state": "true", "msg": "logout successful"})
 
 # silva
