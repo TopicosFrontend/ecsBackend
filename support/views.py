@@ -11,6 +11,9 @@ from django.contrib.auth.models import User
 from support.models import SupportInfo
 from collector.models import CollectorInfo
 
+from django.db import IntegrityError
+from ecsBackend.ecs_decorators import ecs_login_required
+
 # salgado
 def index(request): 
     return HttpResponse("Hello from support backend")
@@ -38,6 +41,7 @@ def logout(request):
 
 # salgado
 @csrf_exempt
+@ecs_login_required
 def register(request):
     try:
         username = request.user.get_username()
@@ -49,12 +53,15 @@ def register(request):
     username = data["user"]
     password = data["password"]
 
-    user = User.objects.create_user(username=username, password=password)
-    user.save()
-    support = SupportInfo(username=user.get_username())
-    support.save()
+    try:
+        user = User.objects.create_user(username=username, password=password)
+        user.save()
+        support = SupportInfo(username=user.get_username())
+        support.save()
+    except IntegrityError:
+        return JsonResponse({"state": "false", "msg": "error creating support user"})
 
-    return JsonResponse({"state": "false", "msg": "user created"})
+    return JsonResponse({"state": "true", "msg": "user created"})
 
 # salgado
 @csrf_exempt
