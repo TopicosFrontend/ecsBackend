@@ -7,9 +7,11 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 
-from ecsBackend.ecs_decorators import ecs_login_required
+from user.models import Code
+from user.user_utils import save_form_data
 
-import json
+from ecsBackend.ecs_decorators import ecs_login_required
+from ecsBackend.ecs_utils import read_json
 
 # salgado
 def index(request):
@@ -44,12 +46,23 @@ def get_form(request):
     return HttpResponse("user get_form")
 
 # salgado
+@csrf_exempt                                                                     
 def save_form(request):
-    return HttpResponse("user save_form")
+    form_json = read_json("example.json")
+
+    codes = form_json["codigo"]
+
+    try:
+        code = Code.objects.get(cfn=codes["cfn"], ecn=codes["ecn"])
+    except Code.DoesNotExist:
+        return JsonResponse({"state": "false", "msg": "code not found"})
+
+    response = save_form_data(code.form, form_json)
+    return JsonResponse(response)
 
 # salgado
 def end_form(request):
-    return HttpResponse("user end_form")
+    return JsonResponse({})
 
 # cristian
 def confirm_form(request):
