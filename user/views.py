@@ -55,14 +55,30 @@ def save_form(request):
     try:
         code = Code.objects.get(cfn=codes["cfn"], ecn=codes["ecn"])
     except Code.DoesNotExist:
-        return JsonResponse({"state": "false", "msg": "code not found"})
+        return JsonResponse({"state": "false", "msg": "form not found"})
 
     response = save_form_data(code.form, form_json)
     return JsonResponse(response)
 
 # salgado
+@csrf_exempt                                                                     
 def end_form(request):
-    return JsonResponse({})
+    data = request.POST
+
+    cfn = data["cfn"]
+    ecn = data["ecn"]
+
+    try:
+        code = Code.objects.get(cfn=cfn, ecn=ecn)
+        code.in_use = False
+        code = None
+        code.save()
+    except Code.DoesNotExist:
+        return JsonResponse({"state": "false", "msg": "form not found"})
+    except Exception:
+        return JsonResponse({"state": "false", "msg": "error while finalizing form"})
+
+    return JsonResponse({"state": "true", "msg": "Form finalized"})
 
 # cristian
 def confirm_form(request):
