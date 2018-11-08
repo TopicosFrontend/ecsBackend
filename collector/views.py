@@ -44,18 +44,18 @@ def logout(request):
 # silva
 @csrf_exempt
 def generate_codes(request):
-    collector = CollectorInfo.objects.get(username="jaimito")
+    collector = CollectorInfo.objects.get(username="joselito")
 
-    code = Code(cfn="1234567890123", ecn="123456789012", collector=collector)
+    code = Code(cfn="1", ecn="a", collector=collector)
     code.save()
 
     form = Form(code=code)
     form.save()
 
-    section = Section(title="section1", form=form)
+    section = Section(form=form)
     section.save()
 
-    item = Item(question="question1", section=section)
+    item = Item(answer="answer1", section=section)
     item.save()
 
     return HttpResponse("collector generate_codes")

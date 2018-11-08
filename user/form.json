@@ -3,11 +3,9 @@
     "fecha": "2018",
     "secciones": [
         {
-            "id": "1",
             "titulo": "DATOS DE LA VIVIENDA",
             "preguntas": [
                 {
-                    "id": "1",
                     "enunciado": "INDIQUE EL TIPO DE VIVIENDA",
                     "respuesta": "",
                     "opciones": [
@@ -21,7 +19,6 @@
                     ]
                 },
                 {
-                    "id": "2",
                     "enunciado": "INDIQUE SI LA VIVIENDA ESTÁ",
                     "opciones": [
                         "Con moradores presentes",
@@ -33,11 +30,9 @@
             ]
         },
         {
-            "id": "2",
             "titulo": "DATOS DE LA VIVIENDA",
             "preguntas": [
                 {
-                    "id": "3",
                     "enunciado": "¿CUÁL ES EL MATERIAL DE CONSTRUCCIÓN PRINCIPAL EN LAS PAREDES EXTERIORES?",
                     "opciones": [
                         "Hormigón armado",
@@ -49,7 +44,6 @@
                     ]
                 },
                 {
-                    "id": "4",
                     "enunciado": "¿CUÁL ES EL MATERIAL DE CONSTRUCCIÓN PRINCIPAL EN LA CUBIERTA DEL TECHO?",
                     "respuesta": "",
                     "opciones": [
@@ -59,11 +53,9 @@
                         "Fonolita o plancha de fieltro embreado",
                         "Paja, coirón, totora o caña",
                         "Materiales precarios (lata, cartón, plástico, etc.)",
-                        "Sin cubierta sólida de techo"
                     ]
                 },
                 {
-                    "id": "5",
                     "enunciado": "¿CUÁL ES EL MATERIAL DE CONSTRUCCIÓN PRINCIPAL EN EL PISO?",
                     "respuesta": "",
                     "opciones": [
@@ -77,11 +69,9 @@
             ]
         },
         {
-            "id": "3",
             "titulo": "DATOS DE LA VIVIENDA",
             "preguntas": [
                 {
-                    "id": "6",
                     "enunciado": "¿CUÁNTAS PIEZAS DE ESTA VIVIENDA SE USAN EXCLUSIVAMENTE COMO DORMITORIO?",
                     "respuesta": "",
                     "opciones": [
@@ -95,7 +85,6 @@
                     ]
                 },
                 {
-                    "id": "7",
                     "enunciado": "El agua que usa esta vivienda proviene principalmente de",
                     "respuesta": "",
                     "opciones": [
@@ -108,11 +97,9 @@
             ]
         },
         {
-            "id": "4",
             "titulo": "DATOS DE LAS PERSONAS",
             "preguntas": [
                 {
-                    "id": "8",
                     "enunciado": "¿QUÉ RELACIÓN DE PARENTESCO TIENE CON EL JEFE/a DE HOGAR?",
                     "respuesta": "",
                     "opciones": [
@@ -133,7 +120,6 @@
                     ]
                 },
                 {
-                    "id": "9",
                     "enunciado": "¿CUÁL ES SU SEXO?",
                     "respuesta": "",
                     "opciones": [
@@ -142,7 +128,6 @@
                     ]
                 },
                 {
-                    "id": "10",
                     "enunciado": "¿EN QUÉ MES NACIÓ?",
                     "respuesta": "",
                     "opciones": [
@@ -160,18 +145,15 @@
                     ]
                 },
                 {
-                    "id": "11",
                     "enunciado": "¿EN QUÉ AÑO NACIÓ?",
                     "respuesta": ""
                 }
             ]
         },
         {
-            "id": "5",
             "titulo": "DATOS DE LAS PERSONAS",
             "preguntas": [
                 {
-                    "id": "12",
                     "enunciado": "¿DONDE VIVE HABITUALMENTE?",
                     "respuesta": "",
                     "opciones": [
@@ -181,7 +163,6 @@
                     ]
                 },
                 {
-                    "id": "13",
                     "enunciado": "¿EN DONDE NACIÓ USTED?",
                     "respuesta": "",
                     "opciones": [
@@ -191,7 +172,6 @@
                     ]
                 },
                 {
-                    "id": "14",
                     "enunciado": "¿EN DONDE NACIÓ SU MADRE?",
                     "respuesta": "",
                     "opciones": [
@@ -203,11 +183,9 @@
             ]
         },
         {
-            "id": "6",
             "titulo": "DATOS DE LAS PERSONAS",
             "preguntas": [
                 {
-                    "id": "15",
                     "enunciado": "¿ASISTE ACTUALMENTE A LA EDUCACIÓN FORMAL?",
                     "respuesta": "",
                     "opciones": [
@@ -216,7 +194,6 @@
                     ]
                 },
                 {
-                    "id": "16",
                     "enunciado": "¿CUÁL ES EL CURSO O AÑO MÁS ALTO APROBADO?",
                     "respuesta": "",
                     "opciones": [
@@ -232,7 +209,6 @@
                     ]
                 },
                 {
-                    "id": "17",
                     "enunciado": "EL CURSO ANTERIORMENTE DECLARADO, A CUÁL DE LOS SIGUIENTES NIVELES CORRESPONDE",
                     "respuesta": "",
                     "opciones": [
@@ -251,11 +227,9 @@
             ]
         },
         {
-            "id": "7",
             "titulo": "DATOS DE LAS PERSONAS",
             "preguntas": [
                 {
-                    "id": "18",
                     "enunciado": "¿SE CONSIDERA PERTENECIENTE A ALGÚN PUEBLO INDÍGENA U ORIGINARIO?",
                     "respuesta": "",
                     "opciones": [
@@ -264,7 +238,6 @@
                     ]
                 },
                 {
-                    "id": "19",
                     "enunciado": "DURANTE LA SEMANA PASADA, ¿TRABAJÓ?",
                     "respuesta": "",
                     "opciones": [
@@ -279,7 +252,6 @@
                     ]
                 },
                 {
-                    "id": "20",
                     "enunciado": "¿CUÁNTAS HIJAS E HIJOS NACIDOS HA TENIDO EN TOTAL?",
                     "respuesta": "",
                     "opciones": [

@@ -10,9 +10,11 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.models import User
 from support.models import SupportInfo
 from collector.models import CollectorInfo
+from user.models import Code
 
 from django.db import IntegrityError
 from ecsBackend.ecs_decorators import ecs_login_required, ecs_support_only
+from ecsBackend.ecs_utils import collector_to_json, form_to_json
 
 # salgado
 def index(request):
@@ -75,11 +77,7 @@ def show_collector(request):
     except CollectorInfo.DoesNotExist:
         return JsonResponse({"state": "false", "msg": "user is not a collector member"})
 
-    response = {"id": collector.id, "user": collector.username, "nombre": collector.name, "codes": []}
-
-    for code in collector.code_set.all():
-        response["codes"].append({"cfn": code.cfn, "ecn": code.ecn})
-
+    response = collector_to_json(collector)
     return JsonResponse(response)
 
 # salgado
@@ -87,21 +85,27 @@ def show_collector(request):
 @ecs_login_required
 @ecs_support_only
 def show_collectors(request):
-    response = {"collectors": []}
-
-    for collector in CollectorInfo.objects.all():
-        collector_info = {"id": collector.id, "user": collector.username, "nombre": collector.name, "codes": []}
-
-        for code in collector.code_set.all():
-            collector_info["codes"].append({"cfn": code.cfn, "ecn": code.ecn})
-    
-        response["collectors"].append(collector_info)
-
+    response = {}
+    response["collectors"] = [collector_to_json(collector) for collector in CollectorInfo.objects.all()]
     return JsonResponse(response)
 
 # salgado
+@csrf_exempt
+@ecs_login_required
+@ecs_support_only
 def show_form(request):
-    return HttpResponse("support show_form")
+    data = request.GET
+    cfn = data["cfn"]
+    ecn = data["ecn"]
+
+    try:
+        code = Code.objects.get(cfn=cfn, ecn=ecn)
+        form = code.form
+    except Code.DoesNotExist:
+        return JsonResponse({"state": "false", "msg": "code not found"})
+
+    response = form_to_json(form)
+    return JsonResponse(response)
 
 # salgado
 def census_status(request):
