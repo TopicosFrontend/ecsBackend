@@ -108,14 +108,23 @@ def show_form(request):
     return JsonResponse(response)
 
 # salgado
+@csrf_exempt
+@ecs_login_required
+@ecs_support_only
 def census_status(request):
-    return HttpResponse("support census_status")
+    response = {}
+
+    codes = Code.objects.all()
+    completed_codes = Code.objects.filter(in_use=False)
+
+    response["total"] = codes.count()
+    response["completed"] = completed_codes.count()
+
+    return JsonResponse(response)
 
 # unassigned
 def transfer_forms(request):
     return HttpResponse("support transfer_forms")
-
-import csv
 
 # salgado
 @csrf_exempt

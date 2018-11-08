@@ -1,5 +1,5 @@
 def code_to_json(code):
-    return {"cfn": code.cfn, "ecn": code.ecn}
+    return {"cfn": code.cfn, "ecn": code.ecn, "in_use": code.in_use}
 
 def collector_to_json(collector):
      response = {"id": collector.id, "user": collector.username, "nombre": collector.name}
