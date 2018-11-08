@@ -87,17 +87,23 @@ def show_collector(request):
 @ecs_login_required
 @ecs_support_only
 def show_collectors(request):
+    response = {"collectors": []}
 
     for collector in CollectorInfo.objects.all():
-        print(collector)
+        collector_info = {"id": collector.id, "user": collector.username, "nombre": collector.name, "codes": []}
 
-    return HttpResponse("support show_collectors")
+        for code in collector.code_set.all():
+            collector_info["codes"].append({"cfn": code.cfn, "ecn": code.ecn})
+    
+        response["collectors"].append(collector_info)
+
+    return JsonResponse(response)
 
 # salgado
 def show_form(request):
     return HttpResponse("support show_form")
 
-# silva
+# salgado
 def census_status(request):
     return HttpResponse("support census_status")
 
