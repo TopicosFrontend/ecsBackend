@@ -7,6 +7,8 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 
+from ecsBackend.ecs_decorators import ecs_login_required
+
 import json
 
 # salgado
@@ -16,12 +18,12 @@ def index(request):
 # salgado
 @csrf_exempt
 def login(request):
-    print("Entro al login")
-    print(request.POST)
     data = request.POST
-    username = data.get("cfn")
-    password = data.get("ecn")
+    username = data["cfn"]
+    password = data["ecn"]
+
     user = authenticate(username=username, password=password)
+
     if user is None:
         return JsonResponse({"state": "false", "msg": "wrong user or password"})
     else:
@@ -30,8 +32,11 @@ def login(request):
 
 # salgado
 @csrf_exempt                                                                     
+@ecs_login_required
 def logout(request):                                                             
     auth_logout(request)                                                         
+    if request.user.is_authenticated:
+        return JsonResponse({"state": "false", "msg": "error logout failed"})
     return JsonResponse({"state": "true", "msg": "logout successful"})
 
 # cristian

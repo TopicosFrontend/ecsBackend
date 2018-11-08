@@ -7,12 +7,13 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 
+from django.db import IntegrityError
+
 from django.contrib.auth.models import User
 from support.models import SupportInfo
 from collector.models import CollectorInfo
 from user.models import Code
 
-from django.db import IntegrityError
 from ecsBackend.ecs_decorators import ecs_login_required, ecs_support_only
 from ecsBackend.ecs_utils import collector_to_json, form_to_json
 
@@ -37,7 +38,6 @@ def login(request):
 
 # salgado
 @csrf_exempt
-@ecs_support_only
 @ecs_login_required
 def logout(request):
     auth_logout(request)

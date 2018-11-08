@@ -7,10 +7,15 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 
+from django.db import IntegrityError
+
 from collector.models import CollectorInfo
-from user.models import Code, Form, Section, Item
+from user.models import Code
 
 from ecsBackend.ecs_decorators import ecs_login_required, ecs_collector_only
+from ecsBackend.ecs_utils import code_to_json
+from collector.collector_utils import generate_code
+from user.user_utils import create_form
 
 # salgado
 def index(request):
@@ -33,7 +38,6 @@ def login(request):
 
 # salgado
 @csrf_exempt
-@ecs_collector_only
 @ecs_login_required
 def logout(request):
     auth_logout(request)
@@ -43,22 +47,33 @@ def logout(request):
 
 # silva
 @csrf_exempt
+@ecs_collector_only
+@ecs_login_required
 def generate_codes(request):
-    collector = CollectorInfo.objects.get(username="joselito")
+    data = request.GET
 
-    code = Code(cfn="1", ecn="a", collector=collector)
-    code.save()
+    number = int(data["number"])
+    username = request.user.get_username()
 
-    form = Form(code=code)
-    form.save()
+    collector = CollectorInfo.objects.get(username=username)
 
-    section = Section(form=form)
-    section.save()
+    codes = []
+    for i in range(number):
+        try:
+            cfn, ecn = generate_code(collector)
 
-    item = Item(answer="answer1", section=section)
-    item.save()
+            code = Code(cfn=cfn, ecn=ecn, collector=collector)
+            code.save()
 
-    return HttpResponse("collector generate_codes")
+            create_form(code)
+            codes.append(code)
+        except IntegrityError:
+            return JsonResponse({"state": "false", "msg": "error creating codes"})
+
+    response = {}
+    response["codes"] = [code_to_json(code) for code in codes]
+
+    return JsonResponse(response)
 
 # silva
 def get_info(request):
