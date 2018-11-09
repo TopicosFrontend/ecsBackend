@@ -48,7 +48,7 @@ def get_form(request):
 # salgado
 @csrf_exempt                                                                     
 def save_form(request):
-    form_json = read_json("example.json")
+    form_json = request.POST
 
     codes = form_json["codigo"]
 
