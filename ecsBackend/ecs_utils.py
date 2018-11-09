@@ -1,4 +1,4 @@
-from json import load as json_load
+from json import load as json_load, loads as json_loads
 
 def code_to_json(code):
     return {"cfn": code.cfn, "ecn": code.ecn, "in_use": code.in_use}
@@ -27,3 +27,6 @@ def form_to_json(form):
 def read_json(json_file):
     with open("ecsBackend/data_files/%s" % json_file) as f:
         return json_load(f)
+
+def string_to_json(string):
+        return json_loads(string)

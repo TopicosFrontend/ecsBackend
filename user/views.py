@@ -11,8 +11,7 @@ from user.models import Code
 from user.user_utils import save_form_data
 
 from ecsBackend.ecs_decorators import ecs_login_required
-from ecsBackend.ecs_utils import read_json
-
+from ecsBackend.ecs_utils import read_json, string_to_json
 # salgado
 def index(request):
     return HttpResponse("Hello from user backend")
@@ -48,8 +47,8 @@ def get_form(request):
 # salgado
 @csrf_exempt                                                                     
 def save_form(request):
-    form_json = request.POST
-
+    form_json = string_to_json(request.body.decode("utf-8"))
+    #import pdb; pdb.set_trace()
     codes = form_json["codigo"]
 
     try:
@@ -63,15 +62,14 @@ def save_form(request):
 # salgado
 @csrf_exempt                                                                     
 def end_form(request):
-    data = request.POST
-
+    data = string_to_json(request.body.decode("utf-8"))
+    #import pdb; pdb.set_trace()
     cfn = data["cfn"]
     ecn = data["ecn"]
 
     try:
         code = Code.objects.get(cfn=cfn, ecn=ecn)
         code.in_use = False
-        code = None
         code.save()
     except Code.DoesNotExist:
         return JsonResponse({"state": "false", "msg": "form not found"})
