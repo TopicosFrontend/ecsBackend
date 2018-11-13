@@ -2,11 +2,6 @@ from django.shortcuts import render, HttpResponse
 
 from django.http import JsonResponse
 
-from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import authenticate
-from django.contrib.auth import login as auth_login
-from django.contrib.auth import logout as auth_logout
-
 from django.db import IntegrityError
 
 from django.contrib.auth.models import User
@@ -14,38 +9,31 @@ from support.models import SupportInfo
 from collector.models import CollectorInfo
 from user.models import Code
 
+from django.views.decorators.csrf import csrf_exempt
 from ecsBackend.ecs_decorators import ecs_login_required, ecs_support_only
-from ecsBackend.ecs_utils import collector_to_json, form_to_json, string_to_json
+from ecsBackend.ecs_utils import collector_to_json, form_to_json
+from ecsBackend.ecs_authenticate import ecs_login, ecs_logout
 
 # salgado
 def index(request):
-    return HttpResponse("Hello from support backend")
+    return JsonResponse("Hello from support backend")
 
 # salgado
 @csrf_exempt
 def login(request):
-    data = string_to_json(request.body.decode("utf-8"))
-    #import pdb; pdb.set_trace()
-    username = data["user"]
-    password = data["password"]
-    user = authenticate(username=username, password=password)
-
-    if user is None:
-        return JsonResponse({"state": False, "msg": "wrong user or password"})
+    if ecs_login(request):
+        return JsonResponse({"state": "true", "msg": "login successful"})
     else:
-        response = JsonResponse({"state": True, "msg": "login successful"})
-        response["Access-Control-Allow-Origin"] = "*"
-        auth_login(request, user)
-        return response
+        return JsonResponse({"state": "false", "msg": "wrong user or password"})
 
 # salgado
 @csrf_exempt
 @ecs_login_required
 def logout(request):
-    auth_logout(request)
-    if request.user.is_authenticated:
-        return JsonResponse({"state": False, "msg": "error logout failed"})
-    return JsonResponse({"state": True, "msg": "logout successful"})
+    if ecs_logout(request):
+        return JsonResponse({"state": "true", "msg": "logout successful"})
+    else:
+        return JsonResponse({"state": "false", "msg": "error logout failed"})
 
 # salgado
 @csrf_exempt
@@ -157,4 +145,11 @@ def set_population(request):
 
 # salgado
 def start_census_night(request):
-    return HttpResponse("support start_census_night")
+
+    {user: Stirng, password: Stirng, start: String}
+
+    data = request.POST
+
+    
+
+    return JsonResponse("support start_census_night")

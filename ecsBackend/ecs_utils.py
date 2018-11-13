@@ -29,4 +29,4 @@ def read_json(json_file):
         return json_load(f)
 
 def string_to_json(string):
-        return json_loads(string)
+    return json_loads(string)

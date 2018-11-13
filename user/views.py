@@ -2,17 +2,14 @@ from django.shortcuts import render, HttpResponse
 
 from django.http import JsonResponse
 
-from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import authenticate
-from django.contrib.auth import login as auth_login
-from django.contrib.auth import logout as auth_logout
-
 from user.models import Code
 from user.models import Form
 from user.user_utils import save_form_data
 
+from django.views.decorators.csrf import csrf_exempt
 from ecsBackend.ecs_decorators import ecs_login_required
 from ecsBackend.ecs_utils import read_json, string_to_json
+from ecsBackend.ecs_authenticate import ecs_login, ecs_logout
 # salgado
 def index(request):
     return HttpResponse("Hello from user backend")
@@ -20,26 +17,19 @@ def index(request):
 # salgado
 @csrf_exempt
 def login(request):
-    data = request.POST
-    username = data["cfn"]
-    password = data["ecn"]
-
-    user = authenticate(username=username, password=password)
-
-    if user is None:
-        return JsonResponse({"state": "false", "msg": "wrong user or password"})
-    else:
-        auth_login(request, user)
+    if ecs_login(request):
         return JsonResponse({"state": "true", "msg": "login successful"})
+    else:
+        return JsonResponse({"state": "false", "msg": "wrong user or password"})
 
 # salgado
 @csrf_exempt                                                                     
 @ecs_login_required
 def logout(request):                                                             
-    auth_logout(request)                                                         
-    if request.user.is_authenticated:
+    if ecs_logout(request):
+        return JsonResponse({"state": "true", "msg": "logout successful"})
+    else:
         return JsonResponse({"state": "false", "msg": "error logout failed"})
-    return JsonResponse({"state": "true", "msg": "logout successful"})
 
 # cristian
 def get_form(request, cfn, ecn):
