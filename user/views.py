@@ -33,8 +33,8 @@ def logout(request):
 
 # cristian
 def get_form(request, cfn, ecn):
-    form = Code.objects.get(cfn=codes["cfn"], ecn=codes["ecn"])
-    import pdb; pdb.set_trace()
+    code = Code.objects.get(cfn=cfn, ecn=ecn)
+    print(code)
     return HttpResponse("user get_form")
 
 # salgado
