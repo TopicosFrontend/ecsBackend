@@ -8,6 +8,7 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 
 from user.models import Code
+from user.models import Form
 from user.user_utils import save_form_data
 
 from ecsBackend.ecs_decorators import ecs_login_required
@@ -41,7 +42,9 @@ def logout(request):
     return JsonResponse({"state": "true", "msg": "logout successful"})
 
 # cristian
-def get_form(request):
+def get_form(request, cfn, ecn):
+    form = Code.objects.get(cfn=codes["cfn"], ecn=codes["ecn"])
+    import pdb; pdb.set_trace()
     return HttpResponse("user get_form")
 
 # salgado
@@ -77,7 +80,3 @@ def end_form(request):
         return JsonResponse({"state": "false", "msg": "error while finalizing form"})
 
     return JsonResponse({"state": "true", "msg": "Form finalized"})
-
-# cristian
-def confirm_form(request):
-    return HttpResponse("user confirm_form")

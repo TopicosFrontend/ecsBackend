@@ -15,7 +15,7 @@ from collector.models import CollectorInfo
 from user.models import Code
 
 from ecsBackend.ecs_decorators import ecs_login_required, ecs_support_only
-from ecsBackend.ecs_utils import collector_to_json, form_to_json
+from ecsBackend.ecs_utils import collector_to_json, form_to_json, string_to_json
 
 # salgado
 def index(request):
@@ -24,17 +24,19 @@ def index(request):
 # salgado
 @csrf_exempt
 def login(request):
-    data = request.POST
+    data = string_to_json(request.body.decode("utf-8"))
+    #import pdb; pdb.set_trace()
     username = data["user"]
     password = data["password"]
-
     user = authenticate(username=username, password=password)
 
     if user is None:
-        return JsonResponse({"state": "false", "msg": "wrong user or password"})
+        return JsonResponse({"state": False, "msg": "wrong user or password"})
     else:
+        response = JsonResponse({"state": True, "msg": "login successful"})
+        response["Access-Control-Allow-Origin"] = "*"
         auth_login(request, user)
-        return JsonResponse({"state": "true", "msg": "login successful"})
+        return response
 
 # salgado
 @csrf_exempt
@@ -42,8 +44,8 @@ def login(request):
 def logout(request):
     auth_logout(request)
     if request.user.is_authenticated:
-        return JsonResponse({"state": "false", "msg": "error logout failed"})
-    return JsonResponse({"state": "true", "msg": "logout successful"})
+        return JsonResponse({"state": False, "msg": "error logout failed"})
+    return JsonResponse({"state": True, "msg": "logout successful"})
 
 # salgado
 @csrf_exempt

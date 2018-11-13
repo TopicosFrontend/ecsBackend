@@ -5,8 +5,9 @@ from collector.models import CollectorInfo
 
 def ecs_login_required(method):
     def ecs_decorator(request):
+        #import pdb; pdb.set_trace()
         if not request.user.is_authenticated:
-            return JsonResponse({"state": "false", "msg": "user is not logged in"})
+            return JsonResponse({"state": False, "msg": "user is not logged in"})
         return method(request)
     return ecs_decorator
 
@@ -17,7 +18,7 @@ def ecs_support_only(method):
             user_support = SupportInfo.objects.get(username=username)
             return method(request)
         except SupportInfo.DoesNotExist:
-            return JsonResponse({"state": "false", "msg": "user is not a support member"})
+            return JsonResponse({"state": False, "msg": "user is not a support member"})
     return ecs_decorator
 
 def ecs_collector_only(method):
@@ -27,5 +28,5 @@ def ecs_collector_only(method):
             user_support = CollectorInfo.objects.get(username=username)
             return method(request)
         except CollectorInfo.DoesNotExist:
-            return JsonResponse({"state": "false", "msg": "user is not a collector member"})
+            return JsonResponse({"state": False, "msg": "user is not a collector member"})
     return ecs_decorator
