@@ -144,12 +144,18 @@ def set_population(request):
     return HttpResponse("support set_population")
 
 # salgado
+@csrf_exempt
+@ecs_login_required
+@ecs_support_only
 def start_census_night(request):
+    if ecs_login(request) == False:
+        return JsonResponse({"state": "false", "msg": "wrong user or password"})
 
-    {user: Stirng, password: Stirng, start: String}
+    try:
+        for code in Code.objects.all():
+            code.in_use = True
+            code.save()
+    except Exception:
+        return JsonResponse({"state": "false", "msg": "error activating codes"})
 
-    data = request.POST
-
-    
-
-    return JsonResponse("support start_census_night")
+    return JsonResponse({"state": "true", "msg": "codes activated"})
