@@ -41,7 +41,7 @@ def get_form(request, cfn, ecn):
 @csrf_exempt                                                                     
 def save_form(request):
     form_json = string_to_json(request.body.decode("utf-8"))
-    #import pdb; pdb.set_trace()
+
     codes = form_json["codigo"]
 
     try:
@@ -56,7 +56,7 @@ def save_form(request):
 @csrf_exempt                                                                     
 def end_form(request):
     data = string_to_json(request.body.decode("utf-8"))
-    #import pdb; pdb.set_trace()
+
     cfn = data["cfn"]
     ecn = data["ecn"]
 
