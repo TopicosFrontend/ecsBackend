@@ -3,13 +3,17 @@ from django.shortcuts import render, HttpResponse
 from django.http import JsonResponse
 
 from user.models import Code
-from user.models import Form
+from user.models import Section
+from user.models import Item
 from user.user_utils import save_form_data
+from django.core import serializers
 
 from django.views.decorators.csrf import csrf_exempt
 from ecsBackend.ecs_decorators import ecs_login_required
 from ecsBackend.ecs_utils import read_json, string_to_json
 from ecsBackend.ecs_authenticate import ecs_login, ecs_logout
+
+import json
 # salgado
 def index(request):
     return HttpResponse("Hello from user backend")
@@ -33,9 +37,18 @@ def logout(request):
 
 # cristian
 def get_form(request, cfn, ecn):
-    code = Code.objects.get(cfn=cfn, ecn=ecn)
-    print(code)
-    return HttpResponse("user get_form")
+    res = []
+    try:
+        form = Code.objects.get(cfn=cfn, ecn=ecn).form
+        sections = Section.objects.filter(form = form)
+        for (i, iterator_section) in enumerate(sections):
+            items_section = Item.objects.filter(section = iterator_section)
+            res.append([])
+            for iterator_items in items_section:
+                res[i].append({'answer': iterator_items.answer})
+        return JsonResponse({"state": True, "msg": "exito", "form": res})
+    except Code.DoesNotExist:
+        return JsonResponse({"state": "false", "msg": "form not found"})
 
 # salgado
 @csrf_exempt                                                                     
