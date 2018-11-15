@@ -25,7 +25,7 @@ SECRET_KEY = '#s)s0yz=1*u9t)(jorw83^!wjzspbwecdcc67x=+os*7c!$!6h'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['ecsbackend.mybluemix.net']
 
 
 # Application definition
