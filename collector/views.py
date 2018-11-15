@@ -9,8 +9,7 @@ from collector.models import CollectorInfo
 from django.views.decorators.csrf import csrf_exempt
 from ecsBackend.ecs_decorators import ecs_login_required, ecs_collector_only
 
-from ecsBackend.ecs_utils import code_to_json
-from ecsBackend.ecs_utils import collector_to_json, form_to_json
+from ecsBackend.ecs_json_utils import code_to_json, collector_to_json, form_to_json
 from ecsBackend.ecs_authenticate import ecs_login, ecs_logout
 from collector.collector_utils import generate_code
 from user.user_utils import create_form

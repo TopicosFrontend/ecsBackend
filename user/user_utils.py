@@ -1,5 +1,5 @@
 from user.models import Form, Section, Item
-from ecsBackend.ecs_utils import read_json
+from ecsBackend.ecs_json_utils import read_json
 
 def create_item(section):
     item = Item(section=section)

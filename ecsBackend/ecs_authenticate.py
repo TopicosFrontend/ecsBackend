@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 
-from ecsBackend.ecs_utils import string_to_json
+from ecsBackend.ecs_json_utils import string_to_json
 
 def ecs_login(request):
     data = string_to_json(request.body.decode("utf-8"))

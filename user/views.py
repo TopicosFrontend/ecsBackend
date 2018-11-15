@@ -7,7 +7,7 @@ from support.models import CensusNigth
 
 from django.views.decorators.csrf import csrf_exempt
 from ecsBackend.ecs_decorators import ecs_login_required
-from ecsBackend.ecs_utils import string_to_json
+from ecsBackend.ecs_json_utils import string_to_json
 from ecsBackend.ecs_authenticate import ecs_login, ecs_logout
 
 from user.user_utils import save_form_data

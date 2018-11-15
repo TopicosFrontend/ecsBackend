@@ -157,7 +157,7 @@ def start_census(request):
     if(len(registers) == 0):
         registerCensusNigth = CensusNigth.objects.create()
         return JsonResponse({"state": True, "msg": "se ha iniciado el censo correctamente"}, safe=False)
-    return JsonResponse({"state": True, "msg": "Ya se inicio el censo", safe=False})
+    return JsonResponse({"state": True, "msg": "Ya se inicio el censo"}, safe=False)
 
 # salgado
 @csrf_exempt
