@@ -10,7 +10,7 @@ def collector_to_json(collector):
 
 def item_to_json(item):
     response = {}
-    response["respuesta"] = item.question
+    response["respuesta"] = item.answer
     return response
 
 def section_to_json(section):

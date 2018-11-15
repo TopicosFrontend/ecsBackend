@@ -16,6 +16,8 @@ from ecsBackend.ecs_decorators import ecs_login_required, ecs_collector_only
 from ecsBackend.ecs_utils import code_to_json
 from collector.collector_utils import generate_code
 from user.user_utils import create_form
+from ecsBackend.ecs_utils import collector_to_json, form_to_json
+from ecsBackend.ecs_authenticate import ecs_login, ecs_logout
 
 # salgado
 def index(request):
@@ -24,17 +26,10 @@ def index(request):
 # salgado
 @csrf_exempt
 def login(request):
-    data = request.POST
-    username = data["user"]
-    password = data["password"]
-
-    user = authenticate(username=username, password=password)
-
-    if user is None:
-        return JsonResponse({"state": "false", "msg": "wrong user or password"})
-    else:
-        auth_login(request, user)
+    if ecs_login(request):
         return JsonResponse({"state": "true", "msg": "login successful"})
+    else:
+        return JsonResponse({"state": "false", "msg": "wrong user or password"})
 
 # salgado
 @csrf_exempt
@@ -47,13 +42,12 @@ def logout(request):
 
 # silva
 @csrf_exempt
-@ecs_collector_only
-@ecs_login_required
+#@ecs_collector_only
+# @ecs_login_required
 def generate_codes(request):
     data = request.GET
-
     number = int(data["number"])
-    username = request.user.get_username()
+    username = "jaimito"
 
     collector = CollectorInfo.objects.get(username=username)
 
@@ -76,8 +70,15 @@ def generate_codes(request):
     return JsonResponse(response)
 
 # silva
+@csrf_exempt
 def get_info(request):
-    return HttpResponse("collector get_info")
+    # username = request.user.get_username()
+    username = "jaimito"
+
+    collector = CollectorInfo.objects.get(username=username)
+    response = collector_to_json(collector)
+
+    return JsonResponse(response)
 
 # silva
 def notification(request):

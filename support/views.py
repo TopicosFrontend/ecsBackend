@@ -74,15 +74,15 @@ def show_collector(request):
 @csrf_exempt
 @ecs_login_required
 @ecs_support_only
-def show_collectors(request):
+def show_collectors(request):    
     response = {}
     response["collectors"] = [collector_to_json(collector) for collector in CollectorInfo.objects.all()]
     return JsonResponse(response)
 
 # salgado
-@csrf_exempt
-@ecs_login_required
-@ecs_support_only
+# @csrf_exempt
+# @ecs_login_required
+# @ecs_support_only
 def show_form(request):
     data = request.GET
     cfn = data["cfn"]
@@ -93,6 +93,7 @@ def show_form(request):
         form = code.form
     except Code.DoesNotExist:
         return JsonResponse({"state": "false", "msg": "code not found"})
+
 
     response = form_to_json(form)
     return JsonResponse(response)
