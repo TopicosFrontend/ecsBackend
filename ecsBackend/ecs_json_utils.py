@@ -4,7 +4,7 @@ def code_to_json(code):
     return {"cfn": code.cfn, "ecn": code.ecn, "in_use": code.in_use}
 
 def collector_to_json(collector):
-     response = {"id": collector.id, "user": collector.username, "nombre": collector.name}
+     response = {"id": collector.id, "user": collector.username, "nombre": collector.name, "cellphone": collector.cellphone}
      response["codes"] = [code_to_json(code) for code in collector.code_set.all()]
      return response
 

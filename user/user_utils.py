@@ -30,9 +30,10 @@ def save_item_data(item, item_json):
     try:
         item.answer = item_json["respuesta"]
         item.save()
-        return {"state": "true", "msg": "item saved"}
+
+        return {"state": True, "msg": "item saved"}
     except Exception:
-        return {"state": "false", "msg": "error saving item"}
+        return {"state": False, "msg": "error saving item"}
 
 def save_section_data(section, section_json):
     try:
@@ -41,11 +42,13 @@ def save_section_data(section, section_json):
 
         for item, item_json in zip(items, items_json):
             response = save_item_data(item, item_json)
-            if response["state"] is "false":
+
+            if response["state"] == False:
                 return response
-        return {"state": "true", "msg": "section saved"}
+
+        return {"state": True, "msg": "section saved"}
     except Exception:
-        return {"state": "false", "msg": "error saving section"}
+        return {"state": False, "msg": "error saving section"}
 
 def save_form_data(form, form_json):
     try:
@@ -54,8 +57,10 @@ def save_form_data(form, form_json):
 
         for section, section_json in zip(sections, sections_json):
             response = save_section_data(section, section_json)
+
             if response["state"] is "false":
                 return response
-        return {"state": "true", "msg": "form saved"}
+
+        return {"state": True, "msg": "form saved"}
     except Exception:
-        return {"state": "false", "msg": "error saving form"}
+        return {"state": False, "msg": "error saving form"}

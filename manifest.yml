@@ -1,0 +1,6 @@
+applications:
+- name: ecsbackend
+  memory: 256M
+  instances: 1
+  buildpack: python_buildpack
+  command: python manage.py migrate; python manage.py migrate --run-syncdb; echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('root', '', 'hola1234')" | python manage.py shell; gunicorn ecsBackend.wsgi

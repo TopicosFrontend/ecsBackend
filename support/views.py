@@ -1,47 +1,47 @@
-from django.shortcuts import render, HttpResponse
-
+from django.shortcuts import HttpResponse
 from django.http import JsonResponse
 
 from django.db import IntegrityError
 
 from django.contrib.auth.models import User
-from support.models import SupportInfo
-from collector.models import CollectorInfo
 from user.models import Code
+from collector.models import CollectorInfo
+from support.models import SupportInfo
 from support.models import CensusNigth
 
 from django.views.decorators.csrf import csrf_exempt
 from ecsBackend.ecs_decorators import ecs_login_required, ecs_support_only
-from ecsBackend.ecs_utils import collector_to_json, form_to_json
+from ecsBackend.ecs_json_utils import collector_to_json, form_to_json, string_to_json
 from ecsBackend.ecs_authenticate import ecs_login, ecs_logout
 
 # salgado
 def index(request):
-    return JsonResponse("Hello from support backend")
+    return HttpResponse("Hello from support backend")
 
 # salgado
 @csrf_exempt
 def login(request):
     if ecs_login(request):
-        return JsonResponse({"state": True, "msg": "login successful"})
+        return JsonResponse({"state": True, "msg": "login successful"}, safe=False)
     else:
-        return JsonResponse({"state": False, "msg": "wrong user or password"})
+        return JsonResponse({"state": False, "msg": "wrong user or password"}, safe=False)
 
 # salgado
 @csrf_exempt
 @ecs_login_required
 def logout(request):
     if ecs_logout(request):
-        return JsonResponse({"state": "true", "msg": "logout successful"})
+        return JsonResponse({"state": True, "msg": "logout successful"}, safe=False)
     else:
-        return JsonResponse({"state": "false", "msg": "error logout failed"})
+        return JsonResponse({"state": False, "msg": "error logout failed"}, safe=False)
 
 # salgado
 @csrf_exempt
 @ecs_login_required
 @ecs_support_only
 def register(request):
-    data = request.POST
+    data = string_to_json(request.body.decode("utf-8"))
+
     username = data["user"]
     password = data["password"]
 
@@ -51,9 +51,9 @@ def register(request):
         support = SupportInfo(username=user.get_username())
         support.save()
     except IntegrityError:
-        return JsonResponse({"state": "false", "msg": "error creating support user"})
+        return JsonResponse({"state": False, "msg": "error creating support user"}, safe=False)
 
-    return JsonResponse({"state": "true", "msg": "user created"})
+    return JsonResponse({"state": True, "msg": "user created"}, safe=False)
 
 # salgado
 @csrf_exempt
@@ -66,10 +66,12 @@ def show_collector(request):
     try:
         collector = CollectorInfo.objects.get(username=username)
     except CollectorInfo.DoesNotExist:
-        return JsonResponse({"state": "false", "msg": "user is not a collector member"})
+        return JsonResponse({"state": False, "msg": "user is not a collector member"}, safe=False)
 
     response = collector_to_json(collector)
-    return JsonResponse(response)
+    response["state"] = True
+    response["msg"] = "collector founded"
+    return JsonResponse(response, safe=False)
 
 # salgado
 @csrf_exempt
@@ -78,12 +80,14 @@ def show_collector(request):
 def show_collectors(request):    
     response = {}
     response["collectors"] = [collector_to_json(collector) for collector in CollectorInfo.objects.all()]
-    return JsonResponse(response)
+    response["state"] = True
+    response["msg"] = "collectors founded"
+    return JsonResponse(response, safe=False)
 
-# salgado
-# @csrf_exempt
-# @ecs_login_required
-# @ecs_support_only
+#salgado
+@csrf_exempt
+@ecs_login_required
+@ecs_support_only
 def show_form(request):
     data = request.GET
     cfn = data["cfn"]
@@ -93,11 +97,12 @@ def show_form(request):
         code = Code.objects.get(cfn=cfn, ecn=ecn)
         form = code.form
     except Code.DoesNotExist:
-        return JsonResponse({"state": "false", "msg": "code not found"})
-
+        return JsonResponse({"state": False, "msg": "code not found"}, safe=False)
 
     response = form_to_json(form)
-    return JsonResponse(response)
+    response["state"] = True
+    response["msg"] = "form founded"
+    return JsonResponse(response, safe=False)
 
 # salgado
 @csrf_exempt
@@ -111,12 +116,14 @@ def census_status(request):
 
     response["total"] = codes.count()
     response["completed"] = completed_codes.count()
+    response["state"] = True
+    response["msg"] = "status calculated"
 
-    return JsonResponse(response)
+    return JsonResponse(response, safe=False)
 
 # unassigned
 def transfer_forms(request):
-    return HttpResponse("support transfer_forms")
+    return JsonResponse("support transfer_forms", safe=False)
 
 # salgado
 @csrf_exempt
@@ -137,9 +144,9 @@ def register_collectors(request):
             error_users.append(username)
 
     if not error_users:
-        return JsonResponse({"state": "true", "msg": "collectors created"})
+        return JsonResponse({"state": True, "msg": "collectors created"}, safe=False)
     else:
-        return JsonResponse({"state": "false", "msg": "some users were not created: [%s]" % ", ".join(error_users)})
+        return JsonResponse({"state": False, "msg": "some users were not created: [%s]" % ", ".join(error_users)}, safe=False)
 
 @csrf_exempt
 @ecs_login_required
@@ -149,8 +156,8 @@ def start_census(request):
     registerCensusNigth = None
     if(len(registers) == 0):
         registerCensusNigth = CensusNigth.objects.create()
-        return JsonResponse({"state": "true", "msg": "se ha iniciado el censo correctamente"})
-    return JsonResponse({"state": "true", "msg": "Ya se inicio el censo"})
+        return JsonResponse({"state": True, "msg": "se ha iniciado el censo correctamente"}, safe=False)
+    return JsonResponse({"state": True, "msg": "Ya se inicio el censo", safe=False})
 
 # salgado
 @csrf_exempt
@@ -158,13 +165,13 @@ def start_census(request):
 @ecs_support_only
 def start_census_night(request):
     if ecs_login(request) == False:
-        return JsonResponse({"state": "false", "msg": "wrong user or password"})
+        return JsonResponse({"state": False, "msg": "wrong user or password"}, safe=False)
 
     try:
         for code in Code.objects.all():
             code.in_use = True
             code.save()
     except Exception:
-        return JsonResponse({"state": "false", "msg": "error activating codes"})
+        return JsonResponse({"state": False, "msg": "error activating codes"}, safe=False)
 
-    return JsonResponse({"state": "true", "msg": "codes activated"})
+    return JsonResponse({"state": True, "msg": "codes activated"}, safe=False)
