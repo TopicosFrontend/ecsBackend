@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from support.models import SupportInfo
 from collector.models import CollectorInfo
 from user.models import Code
+from support.models import CensusNigth
 
 from django.views.decorators.csrf import csrf_exempt
 from ecsBackend.ecs_decorators import ecs_login_required, ecs_support_only
@@ -139,9 +140,16 @@ def register_collectors(request):
     else:
         return JsonResponse({"state": "false", "msg": "some users were not created: [%s]" % ", ".join(error_users)})
 
-# silva
-def set_population(request):
-    return HttpResponse("support set_population")
+@csrf_exempt
+@ecs_login_required
+@ecs_support_only
+def start_census(request):
+    registers = CensusNigth.objects.all()
+    registerCensusNigth = None
+    if(len(registers) == 0):
+        registerCensusNigth = CensusNigth.objects.create()
+        return JsonResponse({"state": "true", "msg": "se ha iniciado el censo correctamente"})
+    return JsonResponse({"state": "true", "msg": "Ya se inicio el censo"})
 
 # salgado
 @csrf_exempt

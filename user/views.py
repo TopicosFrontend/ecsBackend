@@ -6,7 +6,8 @@ from user.models import Code
 from user.models import Section
 from user.models import Item
 from user.user_utils import save_form_data
-from django.core import serializers
+from support.models import CensusNigth
+
 
 from django.views.decorators.csrf import csrf_exempt
 from ecsBackend.ecs_decorators import ecs_login_required
@@ -36,6 +37,7 @@ def logout(request):
         return JsonResponse({"state": "false", "msg": "error logout failed"})
 
 # cristian
+@csrf_exempt  
 def get_form(request, cfn, ecn):
     res = []
     try:
@@ -83,3 +85,13 @@ def end_form(request):
         return JsonResponse({"state": "false", "msg": "error while finalizing form"})
 
     return JsonResponse({"state": "true", "msg": "Form finalized"})
+
+#cristian
+@csrf_exempt  
+def is_census_nigth(request):
+    try:
+        register = CensusNigth.objects.get(pk = 1)
+        return JsonResponse({"state": True, "msg": "Existe el registro", "is_census_nigth": register.isCensusNigth})
+    except CensusNigth.DoesNotExist:
+        return JsonResponse({"state": False, "msg": "No se ha iniciado el censo"})
+    
