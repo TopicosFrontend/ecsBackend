@@ -23,9 +23,9 @@ def index(request):
 @csrf_exempt
 def login(request):
     if ecs_login(request):
-        return JsonResponse({"state": "true", "msg": "login successful"})
+        return JsonResponse({"state": True, "msg": "login successful"})
     else:
-        return JsonResponse({"state": "false", "msg": "wrong user or password"})
+        return JsonResponse({"state": False, "msg": "wrong user or password"})
 
 # salgado
 @csrf_exempt

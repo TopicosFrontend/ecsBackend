@@ -95,3 +95,10 @@ def is_census_nigth(request):
     except CensusNigth.DoesNotExist:
         return JsonResponse({"state": False, "msg": "No se ha iniciado el censo"})
     
+@csrf_exempt
+def is_valid_code(request, cfn, ecn):
+    try:
+        Code.objects.get(cfn = cfn, ecn = ecn)
+        return JsonResponse({"state": True, "msg": "Existe el registro"})
+    except Code.DoesNotExist:
+        return JsonResponse({"state": False, "msg": "No existe el formulario asociado a los codigos"})
