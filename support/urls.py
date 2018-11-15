@@ -13,6 +13,6 @@ urlpatterns = [
     path('census_status/', views.census_status),
     path('transfer_forms/', views.transfer_forms),
     path('register_collectors/', views.register_collectors),
-    path('set_population/', views.set_population),
+    path('start_census/', views.start_census),
     path('start_census_night/', views.start_census_night)
 ]
