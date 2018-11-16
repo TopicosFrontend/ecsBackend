@@ -11,7 +11,7 @@ from support.models import CensusNigth
 
 from django.views.decorators.csrf import csrf_exempt
 from ecsBackend.ecs_decorators import ecs_login_required, ecs_support_only
-from ecsBackend.ecs_json_utils import collector_to_json, form_to_json, string_to_json
+from ecsBackend.ecs_json_utils import collector_to_json, form_to_json, string_to_json, json_to_string
 from ecsBackend.ecs_authenticate import ecs_login, ecs_logout
 
 # salgado
@@ -121,9 +121,23 @@ def census_status(request):
 
     return JsonResponse(response, safe=False)
 
-# unassigned
+# salgado
+@csrf_exempt
+@ecs_login_required
+@ecs_support_only
 def transfer_forms(request):
-    return JsonResponse("support transfer_forms", safe=False)
+    if ecs_login(request) == False:
+        return JsonResponse({"state": False, "msg": "wrong user or password"}, safe=False)
+
+    forms_json = {}
+    forms_json["forms"] = [form_to_json(code.form) for code in Code.objects.filter(in_use=False)]
+
+    json_str = json_to_string(forms_json)
+
+    response = HttpResponse(json_str, content_type='application/json')
+    response['Content-Disposition'] = 'attachment; filename=database.json'
+
+    return response
 
 # salgado
 @csrf_exempt

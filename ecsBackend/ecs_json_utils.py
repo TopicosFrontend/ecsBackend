@@ -1,4 +1,4 @@
-from json import load as json_load, loads as json_loads
+from json import load as json_load, loads as json_loads, dumps as json_dumps
 
 def code_to_json(code):
     return {"cfn": code.cfn, "ecn": code.ecn, "in_use": code.in_use}
@@ -30,3 +30,6 @@ def read_json(json_file):
 
 def string_to_json(string):
     return json_loads(string)
+
+def json_to_string(json_data):
+    return json_dumps(json_data)
