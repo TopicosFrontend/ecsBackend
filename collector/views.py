@@ -37,8 +37,8 @@ def logout(request):
 
 # silva
 @csrf_exempt
-@ecs_collector_only
 @ecs_login_required
+@ecs_collector_only
 def generate_codes(request):
     data = request.GET
     number = int(data["number"])
